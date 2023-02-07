@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(CircleCollider2D))]
 public class FishSpawner : Singleton<FishSpawner>
 {
     [SerializeField]
@@ -17,6 +18,15 @@ public class FishSpawner : Singleton<FishSpawner>
     private Fish newFish;
     private Vector2 randomDirection;
 
+    [SerializeField]
+    private float despawnRadius = 20;
+    private CircleCollider2D despawner;
+
+    protected override void Init()
+    {
+        despawner = GetComponent<CircleCollider2D>();
+        despawner.radius = despawnRadius;
+    }
     private void Start()
     {
         StartCoroutine(AutoSpawn());
@@ -59,6 +69,13 @@ public class FishSpawner : Singleton<FishSpawner>
     {
         if(other.gameObject.tag == "Fish")
             DespawnFish(other.gameObject.GetComponent<Fish>());
+    }
+
+    public IEnumerator Fishpocalypse()
+    {
+        despawner.radius = 0.1f;
+        yield return null;
+        despawner.radius = despawnRadius;
     }
 
     private void OnDrawGizmos()

@@ -30,6 +30,11 @@ public class Shark : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         mouth.enabled = false;
     }
+    public void Reset()
+    {
+        badFishCount = 0;
+        transform.position = Vector2.zero;
+    }
     private void FixedUpdate()
     {
         if (transform.position.y > yBounds)

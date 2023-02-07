@@ -6,6 +6,13 @@ using UnityEngine.UI;
 public class GameManager : Singleton<GameManager>
 {
     [SerializeField]
+    private GameObject gameOverScreen,
+                        instructionsScreen;
+
+    [SerializeField]
+    private InputManager input;
+
+    [SerializeField]
     private Shark player;
 
     [SerializeField]
@@ -20,15 +27,30 @@ public class GameManager : Singleton<GameManager>
 
     private bool gameOver;
 
+    [SerializeField]
+    private Text gameOverScore;
+
     private void Start()
     {
+        input.enabled = false;
+    }
+    public void Reset()
+    {
+        StartCoroutine(FishSpawner.Instance.Fishpocalypse());
+        score = 0;
+        scoreUI.text = "Score : 0";
+        gameOverScreen.SetActive(false);
+        gameOver = false;
+        player.Reset();
         StartGame();
     }
-    private void StartGame()
+    public void StartGame()
     {
+        instructionsScreen.SetActive(false);
         activeColors = startActiveColors;
         StartCoroutine(ChangeSharkEyeColor());
         StartCoroutine(AddColor());
+        input.enabled = true;
     }
     public Color GetRandomColor(bool colorMustBeActive = false)
     {
@@ -58,6 +80,9 @@ public class GameManager : Singleton<GameManager>
     }
     public void GameOver()
     {
+        input.enabled = false;
+        gameOverScore.text = "Score : " + score;
+        gameOverScreen.SetActive(true);
         gameOver = true;
         StopAllCoroutines();
         print("Game Over");
